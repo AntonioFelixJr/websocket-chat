@@ -1,11 +1,20 @@
 Vue.component('chat', {
     template: `
-    <section class="discussion">
-        <span  v-for="message in messages">
-            <message-sender :class="classMessage" sender="message.sender" 
-                message="message.text" timestamp="message.timestamp" ></message-sender>
-        </span>
-    </section>
+    <div>
+        <section class="discussion" mb-5>
+            <message-sender v-for="message, index in messages" :key="index"
+                :class="classMessage" :sender="message.sender" 
+                :message="message.text" :timestamp="message.timestamp" ></message-sender>
+        </section>
+        <div class="input-group fixed-bottom">
+            <input type="text" class="form-control" placeholder="Digite algo"
+            @keyup.enter="sendMessage" v-model="typedMessage">
+            <div class="input-group-append">
+                <button id="input" class="btn btn-outline-dark" type="button"
+                @click="sendMessage">Enviar Mensagem</button>
+            </div>
+        </div>
+    </div>
     `,
     mounted() {
         // inicia a conexao via websoket
@@ -15,29 +24,29 @@ Vue.component('chat', {
         return {
             seq: 1,
             conn: null,
-            messages: []
+            messages: [],
+            typedMessage: ''
         }
     },
     methods: {
-        sendMessage(message) {
-            this.conn.send(message)
+        sendMessage() {
+            this.conn.send(this.typedMessage)
         },
         startConnection() {
-            this.conn = new WebSocket('ws://localhost:8080')
-            this.conn.onopen = function (e) {
+            this.conn = new WebSocket('ws://192.168.9.189:8080')
+            this.conn.onopen = (e) => {
                 console.log("Connection established!")
-
             }
 
             // Evento que será chamado quando houver erro na conexão
-            this.conn.onerror = function() {
-                console.log('Não foi possível conectar-se ao servidor');
-            };
+            this.conn.onerror = () => {
+                console.log('Não foi possível conectar-se ao servidor')
+            }
 
             // Evento que será chamado quando recebido dados do servidor
             console.log(typeof this.messages, typeof this.seq, typeof this.conn, "MESSAGE 1")
 
-            this.conn.onmessage = function(e) {
+            this.conn.onmessage = (e) => {
                 //console.log(JSON.parse(e.data))
                 const newMessage = JSON.parse(e.data)
                 console.log(newMessage)
@@ -45,14 +54,8 @@ Vue.component('chat', {
                 
                 
                 this.messages.push(newMessage)
-            };
+            }
         }
-        // onMessage() {
-        //     conn.onmessage = function (e) {
-        //         let message = JSON.parse(e.data)
-        //         addMessageView(message.sender, message.text, message.timestamp)
-        //     }
-        // }
     },
     computed: {
         classMessage() {
