@@ -4,78 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-  <style>
-
-  html { font-family: 'PT Sans', Georgia, serif; }
-
-  .discussion {
-    max-width: 600px;
-    margin: 0 auto;
-    
-    display: flex;
-    flex-flow: column wrap;
-  }
-
-  .discussion > .bubble {
-    border-radius: 1em;
-    padding: 0.25em 0.75em;
-    margin: 0.0625em;
-    max-width: 50%;
-  }
-
-  .discussion > .bubble.sender {
-    align-self: flex-start;
-    background-color: cornflowerblue;
-    color: #fff;
-  }
-  .discussion > .bubble.recipient {
-    align-self: flex-end;
-    background-color: #efefef;
-  }
-
-  .discussion > .bubble.sender.first { border-bottom-left-radius: 0.1em; }
-  .discussion > .bubble.sender.last { border-top-left-radius: 0.1em; }
-  .discussion > .bubble.sender.middle {
-    border-bottom-left-radius: 0.1em;
-    border-top-left-radius: 0.1em;
-  }
-
-  .discussion > .bubble.recipient.first { border-bottom-right-radius: 0.1em; }
-  .discussion > .bubble.recipient.last { border-top-right-radius: 0.1em; }
-  .discussion > .bubble.recipient.middle {
-    border-bottom-right-radius: 0.1em;
-    border-top-right-radius: 0.1em;
-  }
-
-  .fixed-bottom {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-  }
-
-    .speech-bubble {
-      position: relative;
-      background: #03373c;
-      border-radius: .4em;
-    }
-
-    .speech-bubble:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 0;
-      height: 0;
-      border: 1em solid transparent;
-      border-right-color: #03373c;
-      border-left: 0;
-      border-bottom: 0;
-      margin-top: -0.5em;
-      margin-left: -1em;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/style.css">
   <title>Socket</title>
 </head>
 
@@ -87,48 +16,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
   <script src="assets/js/script.js"></script>
-
-  <script>
-    // addMessageView('Antonio Felix', 'Olá', '15:12')
-
-    // function load() { 
-    //   var el = document.getElementById("input"); 
-    //   el.addEventListener("click", sendMessage, false); 
-    // }
-
-    // function sendMessage(message) {
-    //   conn.send(message)
-    // }
-
-    // document.addEventListener("DOMContentLoaded", load, false);
-
-    // let conn = new WebSocket('ws://localhost:8080');
-    // conn.onopen = function (e) {
-    //   console.log("Connection established!");
-    // }
-
-    // conn.onmessage = function (e) {
-    //   let message = JSON.parse(e.data)
-    //   addMessageView(message.sender, message.text, message.timestamp)
-    // }
-
-    // function addMessageView(owner, message, timestamp) {
-    //   document.getElementById('main').innerHTML += `
-    //     <div class="speech-bubble text-white bg-dark mt-4" style="max-width: 18rem;">
-    //       <div class="card-body">
-    //         <h6 calss="card-tile">
-    //           ${owner}
-    //         </h6>
-    //         <p id="message" class="card-text">
-    //           ${message}
-    //         </p>
-    //       </div>
-    //       <div id="timestamp" class="text-muted">
-    //         ${timestamp}
-    //       </div>
-    //     </div>`
-    // }
-  </script>
 
 </body>
 

@@ -1,19 +1,26 @@
 Vue.component('chat', {
     template: `
     <div>
-        <section class="discussion" mb-5>
-            <message-sender v-for="message, index in messages" :key="index"
-                :class="classMessage" :sender="message.sender" 
-                :message="message.text" :timestamp="message.timestamp" ></message-sender>
-        </section>
-        <div class="input-group fixed-bottom">
-            <input type="text" class="form-control" placeholder="Digite algo"
-            @keyup.enter="sendMessage" v-model="typedMessage">
-            <div class="input-group-append">
-                <button id="input" class="btn btn-outline-dark" type="button"
-                @click="sendMessage">Enviar Mensagem</button>
-            </div>
+        <div v-if="!login">
+            <input placeholder="Insira seu apelido" v-model:value="nickname" type="text"
+                @keyup.enter="loginWs">
         </div>
+        <template v-else>
+            <section class="discussion" mb-5>
+                <message-sender v-for="message, index in messages" :key="index"
+                    :class="classMessage" :sender="message.sender" 
+                    :message="message.message" :timestamp="message.timestamp">
+                </message-sender>
+            </section>
+            <div class="input-group fixed-bottom">
+                <input type="text" class="form-control shadow-none border-1" placeholder="Digite algo"
+                @keyup.enter="sendMessage" v-model="typedMessage">
+                <div class="input-group-append">
+                    <button id="input" class="btn btn-outline-dark" type="button"
+                    @click="sendMessage">Enviar Mensagem</button>
+                </div>
+            </div>
+        </template>
     </div>
     `,
     mounted() {
@@ -23,17 +30,27 @@ Vue.component('chat', {
     data() {
         return {
             seq: 1,
+            login: false,
+            id: 0,
+            nickname: '',
             conn: null,
             messages: [],
             typedMessage: ''
         }
     },
     methods: {
+        loginWs() {
+            const request = JSON.stringify({action: 'login',sender: this.nickname})
+            console.log(request)
+            this.conn.send(request)
+        },
         sendMessage() {
-            this.conn.send(this.typedMessage)
+            const request = JSON.stringify({action: 'send',sender: this.nickname, message: this.typedMessage})
+            console.log(request)
+            this.conn.send(request)
         },
         startConnection() {
-            this.conn = new WebSocket('ws://192.168.9.189:8080')
+            this.conn = new WebSocket('ws://localhost:8070')
             this.conn.onopen = (e) => {
                 console.log("Connection established!")
             }
@@ -47,13 +64,21 @@ Vue.component('chat', {
             console.log(typeof this.messages, typeof this.seq, typeof this.conn, "MESSAGE 1")
 
             this.conn.onmessage = (e) => {
-                //console.log(JSON.parse(e.data))
-                const newMessage = JSON.parse(e.data)
-                console.log(newMessage)
+                const data = JSON.parse(e.data)
+                if (data.login) {
+                    this.login = true
+                    this.id = data.login.id
+                    this.nickname = data.login.name
+                    alert("login com sucesso")
+                    return true
+                } else if (data.error) {
+                    alert(data.error)
+                }
+                console.log(data)
                 console.log(typeof this.messages, typeof this.seq, typeof this.conn, "MESSAGE 2")
                 
                 
-                this.messages.push(newMessage)
+                this.messages.push(data)
             }
         }
     },
@@ -71,10 +96,19 @@ Vue.component('message-sender', {
     props: ['message','sender', 'timestamp'],
     template: `
     <div>
-        {{ message }}
+        <div class="message-header"> 
+            {{ sender }}
+        </div> 
+        <div class="message-body"> 
+            {{ message }}
+        </div> 
+        <div class="message-footer"> 
+            {{ timestamp }}
+        </div> 
     </div>
     `
 })
+
 
 new Vue ({
     el: '#app'
